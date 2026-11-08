@@ -1,7 +1,7 @@
 @php
     // One column per navigation group; items are the panel's own resources and
     // pages, so the menu never drifts from the navigation it mirrors.
-    $columns = collect(filament()->getNavigation())
+    $navigation = collect(filament()->getNavigation())
         ->map(fn ($group) => [
             'label' => (string) $group->getLabel(),
             'icon' => $group->getIcon(),
@@ -18,6 +18,11 @@
         ])
         ->filter(fn (array $column): bool => filled($column['items']))
         ->values();
+
+    // Filament gives groupless items an empty label; they get their own row
+    // above the grid instead of a headingless column.
+    $ungrouped = $navigation->first(fn (array $column): bool => $column['label'] === '');
+    $columns = $navigation->reject(fn (array $column): bool => $column['label'] === '')->values();
 @endphp
 
 {{-- Plain CSS instead of Tailwind: the consumer's theme.css only scans its own
@@ -47,6 +52,22 @@
         padding: 1.5rem;
     }
 
+    /* Groupless items always flow in a single horizontal row. */
+    .fmm-ungrouped {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.25rem 0.5rem;
+        padding: 1rem 1.5rem 0;
+    }
+
+    /* A fixed count per row, when the panel asks for one. */
+    .fmm-ungrouped-grid {
+        display: grid;
+        grid-template-columns: repeat(var(--fmm-ungrouped-columns, 1), minmax(0, 1fr));
+        align-items: stretch;
+    }
+
     @media (min-width: 640px) {
         .fmm-grid-horizontal {
             grid-template-columns: repeat(var(--fmm-columns, 3), minmax(0, 1fr));
@@ -54,13 +75,6 @@
 
         .fmm-grid-vertical {
             grid-template-columns: minmax(0, 1fr);
-        }
-
-        /* Vertical: groups stack, so each group's items flow across the panel. */
-        .fmm-grid-vertical .fmm-list {
-            display: grid;
-            grid-template-columns: repeat(var(--fmm-columns, 3), minmax(0, 1fr));
-            gap: 0 0.5rem;
         }
     }
 
@@ -82,9 +96,9 @@
     }
 
     .fmm-list {
-        display: flex;
-        flex-direction: column;
-        gap: 0.125rem;
+        display: grid;
+        grid-template-columns: repeat(var(--fmm-item-columns, 1), minmax(0, 1fr));
+        gap: 0.125rem 0.5rem;
         margin: 0;
         padding: 0;
         list-style: none;
@@ -103,6 +117,11 @@
 
     .fmm-link:hover {
         background-color: var(--gray-50);
+    }
+
+    /* Keep labels aligned when only some items in a column carry an icon. */
+    .fmm-list:has(.fmm-link svg) .fmm-link:not(:has(svg)) {
+        padding-inline-start: calc(0.5rem + 1.25rem + 0.5rem);
     }
 
     .dark .fmm-link {
@@ -270,7 +289,40 @@
         style="display: none"
         class="fmm-panel"
     >
-        <div class="fmm-grid fmm-grid-{{ $layout }}" style="--fmm-columns: {{ $columnCount }}">
+        @if ($ungrouped)
+            {{-- Groupless items: one horizontal row above the grouped columns. --}}
+            <div
+                data-mega-column
+                data-mega-label=""
+                data-mega-ungrouped
+                @class([
+                    'fmm-ungrouped',
+                    'fmm-ungrouped-grid' => $ungroupedColumnCount !== null,
+                ])
+                @if ($ungroupedColumnCount !== null)
+                    style="--fmm-ungrouped-columns: {{ $ungroupedColumnCount }}"
+                @endif
+            >
+                @foreach ($ungrouped['items'] as $item)
+                    <a
+                        href="{{ $item['url'] }}"
+                        x-on:click="open = false"
+                        @class([
+                            'fmm-link',
+                            'fmm-active' => $item['active'],
+                        ])
+                    >
+                        @if ($item['icon'])
+                            {{ \Filament\Support\generate_icon_html($item['icon']) }}
+                        @endif
+
+                        {{ $item['label'] }}
+                    </a>
+                @endforeach
+            </div>
+        @endif
+
+        <div class="fmm-grid fmm-grid-{{ $layout }}" style="--fmm-columns: {{ $columnCount }}; --fmm-item-columns: {{ $itemColumnCount }}">
             @foreach ($columns as $column)
                 <div data-mega-column data-mega-label="{{ $column['label'] }}">
                     @if (filled($column['label']))

@@ -18,6 +18,10 @@ class FilamentMegaMenuPlugin implements Plugin
 
     protected int $columns = 3;
 
+    protected ?int $itemColumns = null;
+
+    protected ?int $ungroupedColumns = null;
+
     public static function make(): static
     {
         return app(static::class);
@@ -53,9 +57,34 @@ class FilamentMegaMenuPlugin implements Plugin
         return $this;
     }
 
+    /**
+     * Columns used to lay out the navigation groups themselves.
+     */
     public function columns(int $columns): static
     {
         $this->columns = max(1, $columns);
+
+        return $this;
+    }
+
+    /**
+     * Columns used for the items inside one group. Unset means `1` for the
+     * `horizontal` layout and the group count for `vertical`.
+     */
+    public function itemColumns(int $itemColumns): static
+    {
+        $this->itemColumns = max(1, $itemColumns);
+
+        return $this;
+    }
+
+    /**
+     * Items shown per row in the groupless row above the groups. Unset lets
+     * them wrap naturally.
+     */
+    public function ungroupedColumns(int $ungroupedColumns): static
+    {
+        $this->ungroupedColumns = max(1, $ungroupedColumns);
 
         return $this;
     }
@@ -69,6 +98,8 @@ class FilamentMegaMenuPlugin implements Plugin
                 'icon' => $this->icon,
                 'layout' => $this->layout,
                 'columnCount' => $this->columns,
+                'itemColumnCount' => $this->itemColumns ?? ($this->layout === 'vertical' ? $this->columns : 1),
+                'ungroupedColumnCount' => $this->ungroupedColumns,
             ])->render(),
         );
     }
