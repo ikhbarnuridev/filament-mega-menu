@@ -2,6 +2,8 @@
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/ikhbarnuridev/filament-mega-menu.svg?style=flat-square)](https://packagist.org/packages/ikhbarnuridev/filament-mega-menu)
 
+![Mega menu open under the topbar](docs/preview.png)
+
 Turns topbar navigation groups that overflow onto a second row into a full-width
 mega menu, keeping the topbar one row tall.
 
