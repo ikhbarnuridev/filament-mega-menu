@@ -1,5 +1,5 @@
 {
-    "name": "ikhbarnuri/filament-mega-menu",
+    "name": "ikhbarnuridev/filament-mega-menu",
     "description": "Topbar navigation groups that overflow onto a second row become a full-width mega menu instead.",
     "keywords": [
         "ikhbarnuridev",
@@ -29,12 +29,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Ikhbarnuri\\FilamentMegaMenu\\": "src/"
+            "ikhbarnuridev\\FilamentMegaMenu\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Ikhbarnuri\\FilamentMegaMenu\\Tests\\": "tests/"
+            "ikhbarnuridev\\FilamentMegaMenu\\Tests\\": "tests/"
         }
     },
     "scripts": {
@@ -43,7 +43,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Ikhbarnuri\\FilamentMegaMenu\\FilamentMegaMenuServiceProvider"
+                "ikhbarnuridev\\FilamentMegaMenu\\FilamentMegaMenuServiceProvider"
             ]
         }
     },
