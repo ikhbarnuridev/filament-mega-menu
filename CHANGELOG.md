@@ -5,6 +5,15 @@ All notable changes to this project are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.1] - 2026-11-08
+
+### Fixed
+
+- Panel labels stay readable when the panel repaints its topbar. A panel that
+  colours the bar white (a gradient header, say) also coloured the panel's own
+  links, which then disappeared on the white card. The panel now restates its
+  colours against its own id, so a panel's rules no longer reach into it.
+
 ## [1.0.0] - 2026-11-08
 
 First release.
@@ -33,4 +42,5 @@ First release.
 - On a desktop-width screen the panel matches the width of the topbar navigation
   it hangs from; below that it spans the viewport.
 
+[1.0.1]: https://github.com/ikhbarnuridev/filament-mega-menu/releases/tag/v1.0.1
 [1.0.0]: https://github.com/ikhbarnuridev/filament-mega-menu/releases/tag/v1.0.0
