@@ -201,6 +201,33 @@
         top: calc(var(--topbar-height, 4rem) + 0.5rem) !important;
     }
 
+    /* The bar lets its groups wrap, so a group that does not fit lands on a
+       second row until this item has run and folded it away. Two things go
+       wrong in that window: the extra row paints, and it grows the topbar. The
+       clip fixes both -- one row is one item tall, its block padding plus its
+       label line, spacing * 9 -- but clipping still shows the row this item is
+       about to replace, so its last slot swaps its label on reveal. Invisible
+       until measured instead: the bar appears once, already settled. The clip
+       still applies meanwhile, or the hidden row would grow the topbar. The
+       fallback matters because this inline rule is parsed before the theme
+       stylesheet defines --spacing, and an unresolvable var() drops the
+       declaration. `overflow` and `visibility` both keep the real geometry the
+       measurement reads. */
+    html:not(.fmm-ready) .fi-topbar-nav-groups {
+        max-height: calc(var(--spacing, 0.25rem) * 9);
+        overflow: hidden;
+        visibility: hidden;
+    }
+
+    /* Without scripting nothing would ever reveal it, so show the plain bar. */
+    @media (scripting: none) {
+        html:not(.fmm-ready) .fi-topbar-nav-groups {
+            max-height: none;
+            overflow: visible;
+            visibility: visible;
+        }
+    }
+
     /* The panel sits inside the topbar, so a panel that repaints its bar -- a
        gradient background with white links, say -- paints these labels white
        too and they disappear on the white card. Those consumer rules carry
@@ -254,23 +281,29 @@
         columns: [],
 
         init() {
-            // One topbar per page, and this item lives inside it.
-            this.nav = this.$root.closest('.fi-topbar')?.querySelector('.fi-topbar-nav-groups') ?? null;
+            try {
+                // One topbar per page, and this item lives inside it.
+                this.nav = this.$root.closest('.fi-topbar')?.querySelector('.fi-topbar-nav-groups') ?? null;
 
-            if (! this.nav) {
-                return;
+                if (! this.nav) {
+                    return;
+                }
+
+                this.columns = Array.from(this.$root.querySelectorAll('[data-mega-column]'));
+
+                // Rendered in the logo slot; move it in among the other items so it
+                // lines up with them.
+                this.nav.append(this.$root);
+
+                this.measure();
+                requestAnimationFrame(() => this.measure());
+                document.fonts?.ready.then(() => this.measure());
+                this.measureBounds();
+            } finally {
+                // The bar was held invisible until now; every early return above
+                // still has to release it.
+                document.documentElement.classList.add('fmm-ready');
             }
-
-            this.columns = Array.from(this.$root.querySelectorAll('[data-mega-column]'));
-
-            // Rendered in the logo slot; move it in among the other items so it
-            // lines up with them.
-            this.nav.append(this.$root);
-
-            this.measure();
-            requestAnimationFrame(() => this.measure());
-            document.fonts?.ready.then(() => this.measure());
-            this.measureBounds();
         },
 
         // The panel is as wide as the topbar navigation it hangs from, not the
@@ -366,7 +399,11 @@
             }
         },
     }"
-    x-on:resize.window.debounce.150ms="measure(); measureBounds()"
+    {{-- Synchronous, not debounced: a resize event lands before the frame is
+         painted, so the bar is folded in the same frame it re-wrapped in. A
+         debounce would paint the wrapped row for the whole delay. --}}
+    x-on:resize.window="measure(); measureBounds()"
+    x-on:livewire:navigating.window="document.documentElement.classList.remove('fmm-ready')"
     x-on:keydown.escape.window="open = false"
     x-on:click.outside="open = false"
     style="display: none"
@@ -414,7 +451,7 @@
             >
                 @foreach ($ungrouped['items'] as $item)
                     <a
-                        href="{{ $item['url'] }}"
+                        {{ \Filament\Support\generate_href_html($item['url']) }}
                         x-on:click="open = false"
                         @class([
                             'fmm-link',
@@ -448,7 +485,7 @@
                         @foreach ($column['items'] as $item)
                             <li>
                                 <a
-                                    href="{{ $item['url'] }}"
+                                    {{ \Filament\Support\generate_href_html($item['url']) }}
                                     x-on:click="open = false"
                                     @class([
                                         'fmm-link',

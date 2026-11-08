@@ -101,3 +101,51 @@ it('sets how many groupless items share a row', function () {
     expect($html)->toContain('fmm-ungrouped-grid')
         ->and($html)->toContain('--fmm-ungrouped-columns: 2');
 });
+
+it('holds the bar back until the trigger has been measured', function () {
+    $html = (string) FilamentView::renderHook(PanelsRenderHook::TOPBAR_LOGO_AFTER);
+
+    expect($html)->toContain('html:not(.fmm-ready) .fi-topbar-nav-groups')
+        // Clipped to one row, or the hidden wrapped row still grows the topbar.
+        ->and($html)->toContain('max-height: calc(var(--spacing, 0.25rem) * 9)')
+        ->and($html)->toContain('overflow: hidden')
+        // Invisible rather than clipped-but-painted: the last slot swaps labels.
+        ->and($html)->toContain('visibility: hidden')
+        // Revealed in a finally, so the early returns still release the bar.
+        ->and($html)->toContain("document.documentElement.classList.add('fmm-ready')")
+        // SPA navigation has to hide it again for the incoming page.
+        ->and($html)->toContain('livewire:navigating');
+});
+
+it('lets the panel links follow the panel spa mode', function () {
+    // Filament's own href helper, so a link navigates exactly like the bar's.
+    $panel = Panel::make()
+        ->id('spa')
+        ->path('spa')
+        ->topNavigation()
+        ->spa()
+        ->plugin(FilamentMegaMenuPlugin::make())
+        ->navigation(fn (NavigationBuilder $builder): NavigationBuilder => $builder
+            ->groups([
+                NavigationGroup::make('Catalog')->items([
+                    NavigationItem::make('Products')->url('/products'),
+                ]),
+            ]));
+
+    Filament::registerPanel($panel);
+    Filament::setCurrentPanel($panel);
+    $panel->boot();
+
+    $html = (string) FilamentView::renderHook(PanelsRenderHook::TOPBAR_LOGO_AFTER);
+
+    expect($html)->toContain('href="/products" wire:navigate')
+        ->and($html)->toContain('x-on:click="open = false"');
+});
+
+it('removes the bar beside the first row instead of folding it after paint', function () {
+    $html = (string) FilamentView::renderHook(PanelsRenderHook::TOPBAR_LOGO_AFTER);
+
+    // A debounce would leave the re-wrapped bar painted for its whole delay.
+    expect($html)->toContain('x-on:resize.window="measure(); measureBounds()"')
+        ->and($html)->not->toContain('resize.window.debounce');
+});
