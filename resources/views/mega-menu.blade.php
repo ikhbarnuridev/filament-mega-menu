@@ -35,8 +35,11 @@
         z-index: 40;
         max-height: calc(100dvh - 4rem);
         overflow-y: auto;
-        background-color: #fff;
-        box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        background-color: var(--color-white);
+        box-shadow:
+            0 0 0 1px color-mix(in oklab, var(--gray-950) 5%, transparent),
+            0 10px 15px -3px rgb(0 0 0 / 0.1),
+            0 4px 6px -4px rgb(0 0 0 / 0.1);
     }
 
     /* On a desktop-width screen the panel matches the navigation it belongs to
@@ -54,6 +57,10 @@
 
     .dark .fmm-panel {
         background-color: var(--gray-900);
+        box-shadow:
+            0 0 0 1px color-mix(in oklab, var(--color-white) 10%, transparent),
+            0 10px 15px -3px rgb(0 0 0 / 0.1),
+            0 4px 6px -4px rgb(0 0 0 / 0.1);
     }
 
     .fmm-grid {
@@ -98,12 +105,20 @@
         gap: 0.5rem;
         margin-bottom: 0.5rem;
         font-size: 0.875rem;
-        font-weight: 600;
-        color: var(--gray-950);
+        font-weight: 700;
+        color: var(--gray-500);
     }
 
     .dark .fmm-heading {
-        color: #fff;
+        color: var(--gray-400);
+    }
+
+    .fmm-heading > .fi-icon {
+        color: var(--gray-400);
+    }
+
+    .dark .fmm-heading > .fi-icon {
+        color: var(--gray-500);
     }
 
     .fmm-list {
@@ -119,15 +134,20 @@
         display: flex;
         align-items: center;
         gap: 0.5rem;
-        border-radius: 0.5rem;
-        padding: 0.375rem 0.5rem;
+        border-radius: var(--radius-md, 0.375rem);
+        padding: 0.5rem;
         font-size: 0.875rem;
-        color: var(--gray-600);
+        color: var(--gray-700);
         text-decoration: none;
+        transition: background-color 75ms;
     }
 
     .fmm-link:hover {
         background-color: var(--gray-50);
+    }
+
+    .fmm-link > .fi-icon {
+        color: var(--gray-400);
     }
 
     /* Keep labels aligned when only some items in a column carry an icon. */
@@ -136,15 +156,23 @@
     }
 
     .dark .fmm-link {
-        color: var(--gray-300);
+        color: var(--gray-200);
+    }
+
+    .dark .fmm-link > .fi-icon {
+        color: var(--gray-500);
     }
 
     .dark .fmm-link:hover {
-        background-color: color-mix(in oklab, #fff 5%, transparent);
+        background-color: color-mix(in oklab, var(--color-white) 5%, transparent);
     }
 
     .fmm-link.fmm-active {
         font-weight: 500;
+        color: var(--primary-600);
+    }
+
+    .fmm-link.fmm-active > .fi-icon {
         color: var(--primary-600);
     }
 
@@ -153,6 +181,10 @@
     }
 
     .dark .fmm-link.fmm-active {
+        color: var(--primary-400);
+    }
+
+    .dark .fmm-link.fmm-active > .fi-icon {
         color: var(--primary-400);
     }
 
