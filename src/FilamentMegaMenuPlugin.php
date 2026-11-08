@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Ikhbarnuri\FilamentMegaMenu;
+namespace ikhbarnuridev\FilamentMegaMenu;
 
 use Filament\Contracts\Plugin;
 use Filament\Panel;
@@ -33,7 +33,7 @@ class FilamentMegaMenuPlugin implements Plugin
     {
         $panel->renderHook(
             PanelsRenderHook::TOPBAR_LOGO_AFTER,
-            fn (): string => view('filament-mega-menu::mega-menu', [
+            fn(): string => view('filament-mega-menu::mega-menu', [
                 'label' => $this->label ?? __('Menu'),
             ])->render(),
         );

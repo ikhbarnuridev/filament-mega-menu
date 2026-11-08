@@ -4,7 +4,7 @@ use Filament\Facades\Filament;
 use Filament\Panel;
 use Filament\Support\Facades\FilamentView;
 use Filament\View\PanelsRenderHook;
-use Ikhbarnuri\FilamentMegaMenu\FilamentMegaMenuPlugin;
+use ikhbarnuridev\FilamentMegaMenu\FilamentMegaMenuPlugin;
 
 beforeEach(function () {
     $panel = Panel::make()

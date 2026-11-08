@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Ikhbarnuri\FilamentMegaMenu\Tests;
+namespace ikhbarnuridev\FilamentMegaMenu\Tests;
 
 use BladeUI\Heroicons\BladeHeroiconsServiceProvider;
 use BladeUI\Icons\BladeIconsServiceProvider;
@@ -15,7 +15,7 @@ use Filament\Schemas\SchemasServiceProvider;
 use Filament\Support\SupportServiceProvider;
 use Filament\Tables\TablesServiceProvider;
 use Filament\Widgets\WidgetsServiceProvider;
-use Ikhbarnuri\FilamentMegaMenu\FilamentMegaMenuServiceProvider;
+use ikhbarnuridev\FilamentMegaMenu\FilamentMegaMenuServiceProvider;
 use Livewire\LivewireServiceProvider;
 use Orchestra\Testbench\TestCase as Orchestra;
 
@@ -42,6 +42,6 @@ class TestCase extends Orchestra
 
     protected function defineEnvironment($app): void
     {
-        $app['config']->set('app.key', 'base64:'.base64_encode(random_bytes(32)));
+        $app['config']->set('app.key', 'base64:' . base64_encode(random_bytes(32)));
     }
 }

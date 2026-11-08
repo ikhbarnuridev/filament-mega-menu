@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Ikhbarnuri\FilamentMegaMenu;
+namespace ikhbarnuridev\FilamentMegaMenu;
 
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;

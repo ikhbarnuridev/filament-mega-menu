@@ -17,7 +17,7 @@ Not on Packagist yet. Use a path repository:
 ```
 
 ```bash
-composer require ikhbarnuri/filament-mega-menu
+composer require ikhbarnuridev/filament-mega-menu
 ```
 
 ## Usage
@@ -25,7 +25,7 @@ composer require ikhbarnuri/filament-mega-menu
 Register the plugin on any panel that uses top navigation:
 
 ```php
-use Ikhbarnuri\FilamentMegaMenu\FilamentMegaMenuPlugin;
+use ikhbarnuridev\FilamentMegaMenu\FilamentMegaMenuPlugin;
 
 public function panel(Panel $panel): Panel
 {
