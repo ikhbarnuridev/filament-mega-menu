@@ -58,6 +58,10 @@
             ]
         }
     },
+    "support": {
+        "issues": "https://github.com/ikhbarnuridev/filament-mega-menu/issues",
+        "source": "https://github.com/ikhbarnuridev/filament-mega-menu"
+    },
     "config": {
         "sort-packages": true,
         "process-timeout": 0,
