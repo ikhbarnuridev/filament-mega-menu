@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace Workbench\App\Providers\Filament;
 
+use Filament\Http\Middleware\Authenticate;
+use Filament\Http\Middleware\AuthenticateSession;
+use Filament\Http\Middleware\DisableBladeIconComponents;
+use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Navigation\NavigationBuilder;
 use Filament\Navigation\NavigationGroup;
 use Filament\Navigation\NavigationItem;
@@ -11,6 +15,13 @@ use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
 use ikhbarnuridev\FilamentMegaMenu\FilamentMegaMenuPlugin;
+use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
+use Illuminate\Cookie\Middleware\EncryptCookies;
+use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
+use Illuminate\Routing\Middleware\SubstituteBindings;
+use Illuminate\Session\Middleware\StartSession;
+use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Workbench\App\Filament\Resources\UserResource;
 
 /**
  * Sandbox panel. The groups exist to push the topbar past one row, which is the
@@ -27,6 +38,21 @@ class DemoPanelProvider extends PanelProvider
             ->login()
             ->topNavigation()
             ->pages([Dashboard::class])
+            ->resources([UserResource::class])
+            ->middleware([
+                EncryptCookies::class,
+                AddQueuedCookiesToResponse::class,
+                StartSession::class,
+                AuthenticateSession::class,
+                ShareErrorsFromSession::class,
+                PreventRequestForgery::class,
+                SubstituteBindings::class,
+                DisableBladeIconComponents::class,
+                DispatchServingFilamentEvent::class,
+            ])
+            ->authMiddleware([
+                Authenticate::class,
+            ])
             ->plugin(FilamentMegaMenuPlugin::make()->label('Menu')->icon('heroicon-o-bars-3')->layout('horizontal')->columns(2)->itemColumns(3)->ungroupedColumns(4))
             ->navigation(fn (NavigationBuilder $builder): NavigationBuilder => $builder
                 ->items([
@@ -56,18 +82,18 @@ class DemoPanelProvider extends PanelProvider
                         ->icon('heroicon-o-currency-dollar'),
                 ])
                 ->groups([
-                    $this->group('Catalog', 'heroicon-o-cube'),
-                    $this->group('Sales', 'heroicon-o-shopping-cart'),
-                    $this->group('Customers', 'heroicon-o-users'),
-                    $this->group('Content', 'heroicon-o-document-text'),
-                    $this->group('Reports', 'heroicon-o-chart-bar'),
-                    $this->group('Inventory', 'heroicon-o-archive-box'),
+                    $this->group('Catalog', 'heroicon-o-cube', items: 4),
+                    $this->group('Sales', 'heroicon-o-shopping-cart', items: 2),
+                    $this->group('Customers', 'heroicon-o-users', items: 6),
+                    $this->group('Content', 'heroicon-o-document-text', items: 3),
+                    $this->group('Reports', 'heroicon-o-chart-bar', items: 5),
+                    $this->group('Inventory', 'heroicon-o-archive-box', items: 1),
                     // No group icon, so its items may carry their own.
-                    $this->group('Settings', null, 'heroicon-o-cog-6-tooth'),
+                    $this->group('Settings', null, 'heroicon-o-cog-6-tooth', items: 3),
                 ]));
     }
 
-    protected function group(string $label, ?string $icon, ?string $itemIcon = null): NavigationGroup
+    protected function group(string $label, ?string $icon, ?string $itemIcon = null, int $items = 4): NavigationGroup
     {
         return NavigationGroup::make($label)
             ->icon($icon)
@@ -75,7 +101,7 @@ class DemoPanelProvider extends PanelProvider
                 fn (int $index): NavigationItem => NavigationItem::make("{$label} {$index}")
                     ->url('/demo?item='.$index)
                     ->icon($itemIcon),
-                range(1, 4),
+                range(1, $items),
             ));
     }
 }

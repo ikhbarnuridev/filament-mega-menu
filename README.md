@@ -1,5 +1,7 @@
 # Filament Mega Menu
 
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/ikhbarnuridev/filament-mega-menu.svg?style=flat-square)](https://packagist.org/packages/ikhbarnuridev/filament-mega-menu)
+
 Turns topbar navigation groups that overflow onto a second row into a full-width
 mega menu, keeping the topbar one row tall.
 
@@ -7,14 +9,6 @@ The trigger is a normal topbar item, so it lines up with the other menu items. I
 everything fits on one row, the trigger stays hidden and nothing changes.
 
 ## Install
-
-Not on Packagist yet. Use a path repository:
-
-```json
-"repositories": [
-    { "type": "path", "url": "../filament-mega-menu" }
-]
-```
 
 ```bash
 composer require ikhbarnuridev/filament-mega-menu
@@ -78,6 +72,10 @@ instead of drifting to another port. Errors are in
 
 Log in with `demo@example.com` / `password`. Narrow the window under ~1200px and
 the overflowing groups collapse into the "More" trigger.
+
+The panel is wired like a real project so the menu can be judged in context: the
+full session/auth middleware stack, the user menu with its theme switcher, and a
+`UserResource` for the topbar global search to query.
 
 ## Notes
 
