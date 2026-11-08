@@ -1,0 +1,11 @@
+laravel: '@testbench'
+
+providers:
+  - Workbench\App\Providers\Filament\DemoPanelProvider
+
+env:
+  AUTH_MODEL: Workbench\App\Models\User
+
+workbench:
+  start: '/demo'
+  install: true
