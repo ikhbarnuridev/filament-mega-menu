@@ -31,9 +31,9 @@
     .fmm-panel {
         position: fixed;
         inset-inline: 0;
-        top: calc(4rem + 0.5rem);
+        top: calc(var(--topbar-height, 4rem) + 0.5rem);
         z-index: 40;
-        max-height: calc(100dvh - 4.5rem);
+        max-height: calc(100dvh - var(--topbar-height, 4rem) - 0.5rem);
         overflow-y: auto;
         border-radius: var(--radius-lg, 0.5rem);
         background-color: var(--color-white);
@@ -191,6 +191,14 @@
 
     .dark .fmm-link.fmm-active:hover {
         background-color: color-mix(in oklab, var(--primary-400) 10%, transparent);
+    }
+
+    /* A navigation group's own dropdown hangs off its trigger, a few pixels
+       higher than the panel above. Pin it to the same line so both cards open
+       in the same place. floating-ui writes the position inline, so this needs
+       !important; the scope keeps the user menu and table filters untouched. */
+    .fi-topbar-nav-groups .fi-dropdown-panel {
+        top: calc(var(--topbar-height, 4rem) + 0.5rem) !important;
     }
 </style>
 
