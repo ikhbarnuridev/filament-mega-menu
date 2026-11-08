@@ -35,13 +35,11 @@
         z-index: 40;
         max-height: calc(100dvh - 4rem);
         overflow-y: auto;
-        border-top: 1px solid var(--gray-200);
         background-color: #fff;
         box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
     }
 
     .dark .fmm-panel {
-        border-top-color: color-mix(in oklab, #fff 10%, transparent);
         background-color: var(--gray-900);
     }
 
@@ -83,15 +81,12 @@
         align-items: center;
         gap: 0.5rem;
         margin-bottom: 0.5rem;
-        padding-bottom: 0.5rem;
-        border-bottom: 1px solid var(--gray-200);
         font-size: 0.875rem;
         font-weight: 600;
         color: var(--gray-950);
     }
 
     .dark .fmm-heading {
-        border-bottom-color: color-mix(in oklab, #fff 10%, transparent);
         color: #fff;
     }
 
