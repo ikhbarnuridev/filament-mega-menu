@@ -60,6 +60,7 @@ browser, with enough navigation groups to push the topbar past one row.
 ```bash
 composer build   # publish Filament assets, migrate + seed the sandbox DB
 composer serve   # http://127.0.0.1:8000/demo
+composer lint    # format with Pint
 ```
 
 Log in with `demo@example.com` / `password`. Narrow the window under ~1200px and

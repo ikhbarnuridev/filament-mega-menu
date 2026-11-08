@@ -64,7 +64,7 @@ class FilamentMegaMenuPlugin implements Plugin
     {
         $panel->renderHook(
             PanelsRenderHook::TOPBAR_LOGO_AFTER,
-            fn(): string => view('filament-mega-menu::mega-menu', [
+            fn (): string => view('filament-mega-menu::mega-menu', [
                 'label' => $this->label ?? __('Menu'),
                 'icon' => $this->icon,
                 'layout' => $this->layout,

@@ -28,7 +28,7 @@ class DemoPanelProvider extends PanelProvider
             ->topNavigation()
             ->pages([Dashboard::class])
             ->plugin(FilamentMegaMenuPlugin::make()->label('Menu')->icon('heroicon-o-bars-3')->layout('vertical')->columns(4))
-            ->navigation(fn(NavigationBuilder $builder): NavigationBuilder => $builder->groups([
+            ->navigation(fn (NavigationBuilder $builder): NavigationBuilder => $builder->groups([
                 $this->group('Catalog', 'heroicon-o-cube'),
                 $this->group('Sales', 'heroicon-o-shopping-cart'),
                 $this->group('Customers', 'heroicon-o-users'),
@@ -44,8 +44,8 @@ class DemoPanelProvider extends PanelProvider
         return NavigationGroup::make($label)
             ->icon($icon)
             ->items(array_map(
-                fn(int $index): NavigationItem => NavigationItem::make("{$label} {$index}")
-                    ->url('/demo?item=' . $index),
+                fn (int $index): NavigationItem => NavigationItem::make("{$label} {$index}")
+                    ->url('/demo?item='.$index),
                 range(1, 4),
             ));
     }
