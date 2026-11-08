@@ -48,14 +48,19 @@
     }
 
     @media (min-width: 640px) {
-        .fmm-grid {
-            grid-template-columns: repeat(2, minmax(0, 1fr));
+        .fmm-grid-horizontal {
+            grid-template-columns: repeat(var(--fmm-columns, 3), minmax(0, 1fr));
         }
-    }
 
-    @media (min-width: 1280px) {
-        .fmm-grid {
-            grid-template-columns: repeat(3, minmax(0, 1fr));
+        .fmm-grid-vertical {
+            grid-template-columns: minmax(0, 1fr);
+        }
+
+        /* Vertical: groups stack, so each group's items flow across the panel. */
+        .fmm-grid-vertical .fmm-list {
+            display: grid;
+            grid-template-columns: repeat(var(--fmm-columns, 3), minmax(0, 1fr));
+            gap: 0 0.5rem;
         }
     }
 
@@ -248,6 +253,10 @@
         aria-controls="filament-mega-menu"
         class="fi-topbar-item-btn"
     >
+        @if ($icon)
+            {{ \Filament\Support\generate_icon_html($icon) }}
+        @endif
+
         <span class="fi-topbar-item-label">{{ $label }}</span>
         <x-filament::icon icon="heroicon-m-chevron-down" />
     </button>
@@ -261,7 +270,7 @@
         style="display: none"
         class="fmm-panel"
     >
-        <div class="fmm-grid">
+        <div class="fmm-grid fmm-grid-{{ $layout }}" style="--fmm-columns: {{ $columnCount }}">
             @foreach ($columns as $column)
                 <div data-mega-column data-mega-label="{{ $column['label'] }}">
                     @if (filled($column['label']))

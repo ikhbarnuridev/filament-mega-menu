@@ -35,11 +35,22 @@ public function panel(Panel $panel): Panel
 }
 ```
 
-The trigger label defaults to `Menu` (translatable). Override it:
+The trigger label defaults to `Menu` (translatable), and every option is
+optional:
 
 ```php
-->plugin(FilamentMegaMenuPlugin::make()->label('More'))
+->plugin(
+    FilamentMegaMenuPlugin::make()
+        ->label('More')                       // trigger text
+        ->icon('heroicon-o-bars-3')           // trigger icon, before the label
+        ->layout('vertical')                  // 'horizontal' (default) or 'vertical'
+        ->columns(4)                          // grid columns, default 3
+)
 ```
+
+`horizontal` puts one navigation group per column. `vertical` stacks the groups
+and flows each group's items across the panel instead. Either way the grid drops
+to a single column below 640px.
 
 ## Development
 
