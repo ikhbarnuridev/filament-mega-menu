@@ -200,6 +200,47 @@
     .fi-topbar-nav-groups .fi-dropdown-panel {
         top: calc(var(--topbar-height, 4rem) + 0.5rem) !important;
     }
+
+    /* The panel sits inside the topbar, so a panel that repaints its bar -- a
+       gradient background with white links, say -- paints these labels white
+       too and they disappear on the white card. Those consumer rules carry
+       !important and outrank a plain class, so the panel id restates the
+       colours: an id beats their selector, and !important beats theirs. */
+    #filament-mega-menu .fmm-link {
+        color: var(--gray-700) !important;
+    }
+
+    #filament-mega-menu .fmm-heading {
+        color: var(--gray-500) !important;
+    }
+
+    #filament-mega-menu .fmm-heading > .fi-icon,
+    #filament-mega-menu .fmm-link > .fi-icon {
+        color: var(--gray-400) !important;
+    }
+
+    #filament-mega-menu .fmm-link.fmm-active,
+    #filament-mega-menu .fmm-link.fmm-active > .fi-icon {
+        color: var(--primary-600) !important;
+    }
+
+    .dark #filament-mega-menu .fmm-heading {
+        color: var(--gray-400) !important;
+    }
+
+    .dark #filament-mega-menu .fmm-link {
+        color: var(--gray-200) !important;
+    }
+
+    .dark #filament-mega-menu .fmm-heading > .fi-icon,
+    .dark #filament-mega-menu .fmm-link > .fi-icon {
+        color: var(--gray-500) !important;
+    }
+
+    .dark #filament-mega-menu .fmm-link.fmm-active,
+    .dark #filament-mega-menu .fmm-link.fmm-active > .fi-icon {
+        color: var(--primary-400) !important;
+    }
 </style>
 
 {{-- A normal topbar item: it moves itself into the navigation row on boot, so it
