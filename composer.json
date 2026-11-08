@@ -47,7 +47,7 @@
             "@php vendor/bin/testbench workbench:create-sqlite-db --force",
             "@php vendor/bin/testbench migrate --force --seed --seeder=Workbench\\\\Database\\\\Seeders\\\\DatabaseSeeder"
         ],
-        "serve": "@php vendor/bin/testbench serve",
+        "serve": "@php vendor/bin/testbench serve --port=8000",
         "lint": "pint",
         "test": "pest"
     },
@@ -60,6 +60,7 @@
     },
     "config": {
         "sort-packages": true,
+        "process-timeout": 0,
         "allow-plugins": {
             "pestphp/pest-plugin": true
         }

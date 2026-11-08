@@ -72,6 +72,10 @@ composer serve   # http://127.0.0.1:8000/demo
 composer lint    # format with Pint
 ```
 
+`composer serve` pins the port to 8000 and never times out, so it fails loudly
+instead of drifting to another port. Errors are in
+`vendor/orchestra/testbench-core/laravel/storage/logs/laravel.log`.
+
 Log in with `demo@example.com` / `password`. Narrow the window under ~1200px and
 the overflowing groups collapse into the "More" trigger.
 
