@@ -39,6 +39,19 @@
         box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
     }
 
+    /* On a desktop-width screen the panel matches the navigation it belongs to
+       instead of spanning the viewport; below that it stays full width, where a
+       narrower panel would squeeze the group columns. The bounds are measured in
+       JS as physical coordinates, so the overrides are physical too; the
+       fallbacks keep the full width until they are set. */
+    @media (min-width: 80rem) {
+        .fmm-panel {
+            right: auto;
+            left: var(--fmm-panel-start, 0);
+            width: var(--fmm-panel-width, 100%);
+        }
+    }
+
     .dark .fmm-panel {
         background-color: var(--gray-900);
     }
@@ -50,12 +63,15 @@
         padding: 1.5rem;
     }
 
-    /* Groupless items always flow in a single horizontal row. */
+    /* Groupless items always flow in a single horizontal row. The row is pulled
+       back by the links' own inset, so the label of whichever item starts each
+       row sits flush with the group headings. */
     .fmm-ungrouped {
         display: flex;
         flex-wrap: wrap;
         align-items: center;
         gap: 0.25rem 0.5rem;
+        margin-inline-start: -0.5rem;
         padding: 1rem 1.5rem 0;
     }
 
@@ -172,6 +188,20 @@
             this.measure();
             requestAnimationFrame(() => this.measure());
             document.fonts?.ready.then(() => this.measure());
+            this.measureBounds();
+        },
+
+        // The panel is as wide as the topbar navigation it hangs from, not the
+        // viewport. Read fresh every time: the bar reflows as items wrap.
+        measureBounds() {
+            if (! this.nav.getClientRects().length) {
+                return;
+            }
+
+            const nav = this.nav.getBoundingClientRect();
+
+            this.$refs.panel.style.setProperty('--fmm-panel-start', `${Math.round(nav.left)}px`);
+            this.$refs.panel.style.setProperty('--fmm-panel-width', `${Math.round(nav.width)}px`);
         },
 
         measure() {
@@ -254,7 +284,7 @@
             }
         },
     }"
-    x-on:resize.window.debounce.150ms="measure()"
+    x-on:resize.window.debounce.150ms="measure(); measureBounds()"
     x-on:keydown.escape.window="open = false"
     x-on:click.outside="open = false"
     style="display: none"
@@ -262,7 +292,7 @@
 >
     <button
         type="button"
-        x-on:click="open = ! open"
+        x-on:click="open = ! open; measureBounds()"
         x-bind:aria-expanded="open"
         aria-controls="filament-mega-menu"
         class="fi-topbar-item-btn"
@@ -275,9 +305,11 @@
         <x-filament::icon icon="heroicon-m-chevron-down" />
     </button>
 
-    {{-- Full-width panel pinned under the sticky topbar; the grid drops to one
-         column on narrow screens so the links stack downwards. --}}
+    {{-- Panel pinned under the sticky topbar. On a desktop-width screen it
+         matches the navigation's width; below that it spans the viewport, where
+         the grid drops to one column so the links stack downwards. --}}
     <div
+        x-ref="panel"
         x-show="open"
         x-transition.opacity.duration.150ms
         id="filament-mega-menu"
