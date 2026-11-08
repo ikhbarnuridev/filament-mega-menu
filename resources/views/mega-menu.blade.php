@@ -31,10 +31,11 @@
     .fmm-panel {
         position: fixed;
         inset-inline: 0;
-        top: 4rem;
+        top: calc(4rem + 0.5rem);
         z-index: 40;
-        max-height: calc(100dvh - 4rem);
+        max-height: calc(100dvh - 4.5rem);
         overflow-y: auto;
+        border-radius: var(--radius-lg, 0.5rem);
         background-color: var(--color-white);
         box-shadow:
             0 0 0 1px color-mix(in oklab, var(--gray-950) 5%, transparent),
