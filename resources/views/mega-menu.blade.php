@@ -376,8 +376,8 @@
                 last.style.display = 'none';
             }
 
-            // A column whose group is still in the first row would repeat it. Group
-            // dropdown panels are teleported out of the bar, so their links are not
+            // Anything the first row still shows would repeat here. Group dropdown
+            // panels are teleported out of the bar, so their links are not
             // reachable from here -- match the visible labels instead.
             const inBar = new Set(
                 items
@@ -389,14 +389,33 @@
             for (const column of this.columns) {
                 const label = column.dataset.megaLabel;
 
-                // Ungrouped items have no heading; they repeat only when all of
-                // their links are still in the bar.
-                const shown = label
-                    ? ! inBar.has(label)
-                    : ! Array.from(column.querySelectorAll('a')).every((link) => inBar.has(link.textContent.trim()));
+                if (label) {
+                    // A group the first row still shows is repeated whole; its own
+                    // dropdown already holds its items.
+                    column.style.display = inBar.has(label) ? 'none' : '';
+                } else {
+                    // Ungrouped items carry no heading to match against, so drop
+                    // only the ones the bar kept: the row shows what spilled over.
+                    let overflowed = 0;
 
-                column.style.display = shown ? '' : 'none';
+                    for (const link of column.querySelectorAll('a')) {
+                        const visible = ! inBar.has(link.textContent.trim());
+
+                        link.style.display = visible ? '' : 'none';
+                        overflowed += visible ? 1 : 0;
+                    }
+
+                    column.style.display = overflowed ? '' : 'none';
+                }
             }
+
+            // The trigger follows the panel, not the whole navigation: an item
+            // the bar still shows marks itself active up there, so repeating it
+            // here would claim a page sits in a menu it never landed in.
+            const currentPageInPanel = [...this.$root.querySelectorAll('.fmm-link.fmm-active')]
+                .some((link) => link.style.display !== 'none' && link.closest('[data-mega-column]').style.display !== 'none');
+
+            this.$root.classList.toggle('fi-active', currentPageInPanel);
         },
     }"
     {{-- Synchronous, not debounced: a resize event lands before the frame is

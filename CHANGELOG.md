@@ -5,6 +5,26 @@ All notable changes to this project are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.3] - 2026-11-09
+
+### Added
+
+- The trigger is marked active when the current page is one of the items the
+  panel actually holds. It reuses Filament's own `fi-active` class, so it wears
+  the same look the topbar already gives an active navigation group: the label
+  turns primary and the button takes a subtle background, in light and dark
+  mode. An item the bar still fits is not repeated, so it does not light the
+  trigger: it already marks itself active in the bar.
+- The workbench sandbox gains four routable pages (`Overview`, `Changelog`,
+  `Products`, `Articles`) with the route-based active state a real panel's pages
+  and resources have, so the trigger's active state can be seen in the sandbox.
+
+### Fixed
+
+- The groupless row no longer repeats the items the topbar still shows. It used
+  to appear whole as soon as one of its items spilled over, so the same item
+  could sit in the bar and inside the menu at once.
+
 ## [1.0.2] - 2026-11-09
 
 ### Fixed
@@ -60,6 +80,7 @@ First release.
 - On a desktop-width screen the panel matches the width of the topbar navigation
   it hangs from; below that it spans the viewport.
 
+[1.0.3]: https://github.com/ikhbarnuridev/filament-mega-menu/releases/tag/v1.0.3
 [1.0.2]: https://github.com/ikhbarnuridev/filament-mega-menu/releases/tag/v1.0.2
 [1.0.1]: https://github.com/ikhbarnuridev/filament-mega-menu/releases/tag/v1.0.1
 [1.0.0]: https://github.com/ikhbarnuridev/filament-mega-menu/releases/tag/v1.0.0

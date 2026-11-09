@@ -39,6 +39,9 @@ it('injects a hidden trigger into the topbar logo slot', function () {
 
     expect($this->panel->hasPlugin('filament-mega-menu'))->toBeTrue()
         ->and($html)->toContain('fi-topbar-item fmm-trigger')
+        // Always plain server-side: whether the current page's item lands in the
+        // panel is only known once the bar has been measured.
+        ->and($html)->toContain('class="fi-topbar-item fmm-trigger"')
         ->and($html)->toContain('style="display: none"')
         ->and($html)->toContain('More')
         ->and($html)->toContain('fmm-grid fmm-grid-vertical')
@@ -148,4 +151,36 @@ it('removes the bar beside the first row instead of folding it after paint', fun
     // A debounce would leave the re-wrapped bar painted for its whole delay.
     expect($html)->toContain('x-on:resize.window="measure(); measureBounds()"')
         ->and($html)->not->toContain('resize.window.debounce');
+});
+
+it('lights the trigger up only for an item that landed in the panel', function () {
+    // The current page is known at render time, but the panel is not: the bar
+    // measures which items it can keep, and an item it keeps already marks
+    // itself active in the bar. So the item is marked server-side and the
+    // trigger follows the measured panel.
+    $panel = Panel::make()
+        ->id('active')
+        ->path('active')
+        ->topNavigation()
+        ->plugin(FilamentMegaMenuPlugin::make())
+        ->navigation(fn (NavigationBuilder $builder): NavigationBuilder => $builder
+            ->groups([
+                NavigationGroup::make('Catalog')->items([
+                    NavigationItem::make('Products')
+                        ->url('/active/products')
+                        ->activeWhen(fn (): bool => true),
+                ]),
+            ]));
+
+    Filament::registerPanel($panel);
+    Filament::setCurrentPanel($panel);
+    $panel->boot();
+
+    $html = (string) FilamentView::renderHook(PanelsRenderHook::TOPBAR_LOGO_AFTER);
+
+    expect($html)->toContain('fmm-link fmm-active')
+        // The item is marked server-side; the trigger follows the measured panel.
+        ->and($html)->toContain("this.\$root.classList.toggle('fi-active', currentPageInPanel)")
+        // An ungrouped item the bar kept is dropped from the panel's own copy.
+        ->and($html)->toContain('inBar.has(link.textContent.trim())');
 });

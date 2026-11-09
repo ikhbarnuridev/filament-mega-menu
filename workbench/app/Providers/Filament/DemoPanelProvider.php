@@ -21,11 +21,19 @@ use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Workbench\App\Filament\Pages\Articles;
+use Workbench\App\Filament\Pages\Changelog;
+use Workbench\App\Filament\Pages\Overview;
+use Workbench\App\Filament\Pages\Products;
 use Workbench\App\Filament\Resources\UserResource;
 
 /**
  * Sandbox panel. The groups exist to push the topbar past one row, which is the
  * only condition the plugin reacts to.
+ *
+ * A few pages are real and routable, so their navigation items carry the same
+ * route-based active state a consumer's resources and pages do; the rest are
+ * placeholders, there to keep the bar overflowing.
  */
 class DemoPanelProvider extends PanelProvider
 {
@@ -37,7 +45,13 @@ class DemoPanelProvider extends PanelProvider
             ->path('demo')
             ->login()
             ->topNavigation()
-            ->pages([Dashboard::class])
+            ->pages([
+                Dashboard::class,
+                Overview::class,
+                Changelog::class,
+                Products::class,
+                Articles::class,
+            ])
             ->resources([UserResource::class])
             ->middleware([
                 EncryptCookies::class,
@@ -56,15 +70,11 @@ class DemoPanelProvider extends PanelProvider
             ->plugin(FilamentMegaMenuPlugin::make()->label('Menu')->icon('heroicon-o-bars-3')->layout('horizontal')->columns(2)->itemColumns(3)->ungroupedColumns(4))
             ->navigation(fn (NavigationBuilder $builder): NavigationBuilder => $builder
                 ->items([
-                    NavigationItem::make('Overview')
-                        ->url('/demo?item=overview')
-                        ->icon('heroicon-o-home'),
+                    ...Overview::getNavigationItems(),
+                    ...Changelog::getNavigationItems(),
                     NavigationItem::make('Help')
                         ->url('/demo?item=help')
                         ->icon('heroicon-o-question-mark-circle'),
-                    NavigationItem::make('Changelog')
-                        ->url('/demo?item=changelog')
-                        ->icon('heroicon-o-document-text'),
                     NavigationItem::make('Support')
                         ->url('/demo?item=support')
                         ->icon('heroicon-o-lifebuoy'),
@@ -82,10 +92,10 @@ class DemoPanelProvider extends PanelProvider
                         ->icon('heroicon-o-currency-dollar'),
                 ])
                 ->groups([
-                    $this->group('Catalog', 'heroicon-o-cube', items: 4),
+                    $this->group('Catalog', 'heroicon-o-cube', items: 3, leading: Products::getNavigationItems()),
                     $this->group('Sales', 'heroicon-o-shopping-cart', items: 2),
                     $this->group('Customers', 'heroicon-o-users', items: 6),
-                    $this->group('Content', 'heroicon-o-document-text', items: 3),
+                    $this->group('Content', 'heroicon-o-document-text', items: 2, leading: Articles::getNavigationItems()),
                     $this->group('Reports', 'heroicon-o-chart-bar', items: 5),
                     $this->group('Inventory', 'heroicon-o-archive-box', items: 1),
                     // No group icon, so its items may carry their own.
@@ -93,15 +103,21 @@ class DemoPanelProvider extends PanelProvider
                 ]));
     }
 
-    protected function group(string $label, ?string $icon, ?string $itemIcon = null, int $items = 4): NavigationGroup
+    /**
+     * @param  array<NavigationItem>  $leading  Real items, placed ahead of the fillers.
+     */
+    protected function group(string $label, ?string $icon, ?string $itemIcon = null, int $items = 4, array $leading = []): NavigationGroup
     {
         return NavigationGroup::make($label)
             ->icon($icon)
-            ->items(array_map(
-                fn (int $index): NavigationItem => NavigationItem::make("{$label} {$index}")
-                    ->url('/demo?item='.$index)
-                    ->icon($itemIcon),
-                range(1, $items),
-            ));
+            ->items([
+                ...$leading,
+                ...array_map(
+                    fn (int $index): NavigationItem => NavigationItem::make("{$label} {$index}")
+                        ->url('/demo?item='.$index)
+                        ->icon($itemIcon),
+                    range(1, $items),
+                ),
+            ]);
     }
 }
